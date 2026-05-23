@@ -1,0 +1,34 @@
+# --- Secrets ---
+**/.env
+**/.env.*
+!**/.env.example
+
+# --- Python ---
+**/.venv/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+
+# --- Node / Vite ---
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/*.local
+**/npm-debug.log*
+
+# --- OS / Editor ---
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# --- Logs ---
+**/logs/
+**/*.log
+
+# --- Claude Code runtime (keep harness defs, drop runtime cache) ---
+.claude/settings.local.json
+
+# --- Railway ---
+.railway/
