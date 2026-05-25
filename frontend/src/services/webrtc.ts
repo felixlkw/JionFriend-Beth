@@ -58,9 +58,10 @@ export class BethSession {
       this.dataChannel.onopen = () => {
         this.opts.onStatusChange?.('listening');
         // Trigger Beth's first greeting so she speaks first.
+        // GA: response.create 내 modalities → output_modalities
         this.send({
           type: 'response.create',
-          response: { modalities: ['audio', 'text'] },
+          response: { output_modalities: ['audio'] },
         });
       };
 
@@ -68,7 +69,9 @@ export class BethSession {
       await this.conn.setLocalDescription(offer);
 
       const key = await getEphemeralKey();
-      const sdpRes = await fetch('https://api.openai.com/v1/realtime', {
+      // GA 엔드포인트: /v1/realtime  →  /v1/realtime/calls.
+      // body 포맷은 Beta와 동일: raw SDP text + Content-Type: application/sdp.
+      const sdpRes = await fetch('https://api.openai.com/v1/realtime/calls', {
         method: 'POST',
         body: offer.sdp,
         headers: {
@@ -77,7 +80,8 @@ export class BethSession {
         },
       });
       if (!sdpRes.ok) {
-        throw new Error(`Realtime SDP exchange failed (${sdpRes.status})`);
+        const errText = await sdpRes.text().catch(() => '');
+        throw new Error(`Realtime SDP exchange failed (${sdpRes.status}): ${errText}`);
       }
       const answer: RTCSessionDescriptionInit = {
         type: 'answer',
