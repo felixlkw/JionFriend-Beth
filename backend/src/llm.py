@@ -78,11 +78,16 @@ async def generate_webrtc_key() -> str:
                         "model": OPENAI_TRANSCRIPTION_MODEL,
                         "language": "ko",
                     },
+                    # VAD 튜닝 (2026-06-03):
+                    # - threshold 0.75: TV·주변 대화 같은 약한 음성/잡음을 발화 시작으로 잡지 않음
+                    # - silence_duration_ms 900: 짧은 끊김에 너무 빨리 턴을 종료하지 않음
+                    # - interrupt_response false: 베스 발화 중 외부 음성으로 응답이 잘리지 않음
                     "turn_detection": {
                         "type": "server_vad",
-                        "threshold": 0.5,
+                        "threshold": 0.75,
                         "prefix_padding_ms": 300,
-                        "silence_duration_ms": 600,
+                        "silence_duration_ms": 900,
+                        "interrupt_response": False,
                     },
                 },
             },
